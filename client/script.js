@@ -19,7 +19,14 @@ function msg(text, bad = false) {
 async function doLogin(path) {
   const u = el("u").value.trim();
   const p = el("p").value;
-  if (!/^[a-z0-9_]{3,32}$/i.test(u)) return msg("Bad username", true);
+
+  // test user input for safe values
+  // // Only letters (a-z, case-insensitive),
+  // // numbers (0-9), and underscores (_)
+  // // Length between 3 and 32 characters
+
+  // if (!/^[a-z0-9_]{3,32}$/i.test(u)) return msg("Bad username", true);
+
   try {
     const res = await fetch(API + path, {
       method: "POST",
