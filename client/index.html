@@ -2,10 +2,114 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Project Secure Kanban</title>
+    <title>Login → Kanban (with DOM-XSS demo)</title>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
-  <body></body>
+  <body>
+    <div class="wrap grid">
+      <div class="card" id="loginCard">
+        <h1>Login</h1>
+        <p class="muted">
+          Safe (parameterized) backend. After login, you’ll see a Kanban board.
+          Task descriptions are rendered <em>unsafely</em> by default to
+          demonstrate a DOM-based XSS.
+        </p>
+        <label>Username</label>
+        <input id="u" placeholder="alice" autocomplete="username" />
+        <label>Password</label>
+        <input
+          id="p"
+          placeholder="try: wonderland OR an injection"
+          type="password"
+          autocomplete="current-password"
+        />
+        <div class="bar" style="margin-top: 0.75rem">
+          <button class="primary" id="loginBtn">Login (safe)</button>
+          <button class="ghost" id="loginVulnBtn">
+            Login (vulnerable SQL)
+          </button>
+          <span id="msg" class="muted"></span>
+        </div>
+      </div>
+
+      <div class="card hidden" id="appCard">
+        <div class="bar" style="justify-content: space-between">
+          <div>
+            <h1 style="display: inline">Kanban</h1>
+            <span class="muted" id="who"></span>
+          </div>
+          <button class="ghost" id="logoutBtn" style="margin-left: 1rem">
+            Logout
+          </button>
+          <div class="toggle">
+            <input type="checkbox" id="safeToggle" />
+            <label for="safeToggle" class="muted"
+              >Use <strong>safe</strong> rendering for descriptions</label
+            >
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top: 1rem">
+          <div class="card">
+            <h3>Create task</h3>
+            <label>Title</label>
+            <input id="tTitle" placeholder="e.g., Write report" />
+            <label>Description</label>
+            <textarea
+              id="tDesc"
+              rows="3"
+              placeholder="Try a payload like: &lt;img src=x onerror=alert('XSS')&gt;"
+            ></textarea>
+            <label>Status</label>
+            <select id="tStatus">
+              <option value="todo">todo</option>
+              <option value="doing">doing</option>
+              <option value="done">done</option>
+            </select>
+            <div class="bar" style="margin-top: 0.6rem">
+              <button class="primary" id="addTaskBtn">Add task</button>
+              <span id="saveMsg" class="muted"></span>
+            </div>
+          </div>
+
+          <div class="row" style="align-items: start">
+            <div class="col">
+              <h3>To do</h3>
+              <div id="col-todo"></div>
+            </div>
+            <div class="col">
+              <h3>Doing</h3>
+              <div id="col-doing"></div>
+            </div>
+            <div class="col">
+              <h3>Done</h3>
+              <div id="col-done"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>What’s happening (teaching notes)</h3>
+        <ul class="muted">
+          <li>
+            Login uses a <strong>parameterized query</strong> on the backend.
+            The “vulnerable” button still uses concatenated SQL to show SQLi
+            bypass.
+          </li>
+          <li>
+            Task <em>descriptions</em> are rendered with
+            <code>innerHTML</code> by default →
+            <strong>DOM-based XSS</strong> demo (e.g.,
+            <code>&lt;img src=x onerror=alert(1)&gt;</code>).
+          </li>
+          <li>
+            Flip the toggle to switch to the <strong>safe</strong> renderer
+            (uses <code>textContent</code>).
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
 </html>
