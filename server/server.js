@@ -97,6 +97,8 @@ app.post("/api/login", allowFront, (req, res) => {
 });
 
 // ----- Vulnerable login (SQLi) -----
+// See, Auth (safe) for passing user input as parameters instead of raw code.
+
 app.options("/api/login-vulnerable", allowFront);
 app.post("/api/login-vulnerable", allowFront, (req, res) => {
   const { username = "", password = "" } = req.body || {};
